@@ -150,6 +150,21 @@ def do_filesystem(state, args):
                 progress_callback=show_progress_bar,
                 verbose=verbose,
             )
+    elif command == "rmdir" and args.recursive:
+        script = """import uos
+dir = '%s'
+def rmdir(path):
+    for (name, type, _, _) in uos.ilistdir(path):
+        print('removing', path, name, type)
+        if type is 0x4000:
+            rmdir('{}/{}'.format(path, name))
+        else:
+            uos.remove('{}/{}'.format(path, name))
+    if not path is '/':
+        uos.rmdir(path)
+rmdir(dir)
+        """
+        state.pyb.exec_(script % args.path[0])
     else:
         if args.recursive:
             raise CommandError("'-r' only supported for 'cp'")

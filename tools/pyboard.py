@@ -323,7 +323,7 @@ class Pyboard:
         return data
 
     def enter_raw_repl(self, soft_reset=True):
-        time.sleep(1)
+        time.sleep(3)
         self.serial.write(b"\r\x03\x03")  # ctrl-C twice: interrupt any running program
 
         # flush input (without relying on serial.flushInput())
